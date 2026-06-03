@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>地獄轉運站 - 終極試煉</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0d0d0d;
+            color: #e0e0e0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, "Microsoft JhengHei", sans-serif;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            text-align: center;
+        }
+        h1 {
+            color: #ff3b30;
+            margin-bottom: 25px;
+            font-size: 2rem;
+            letter-spacing: 2px;
+        }
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .btn-row {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 25px;
+        }
+        .btn {
+            background: #2c2c2e;
+            color: #fff;
+            border: 1px solid #444;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+        .btn:hover {
+            background: #ff3b30;
+            border-color: #ff3b30;
+            transform: translateY(-2px);
+        }
+        .btn-ans {
+            background: #ffcc00;
+            color: #000;
+            font-weight: bold;
+            border: none;
+            margin-top: 15px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+        .btn-ans:hover {
+            background: #ff9500;
+            color: #fff;
+        }
+        .btn-yes {
+            background: #34c759;
+            border: none;
+            max-width: 180px;
+        }
+        .btn-yes:hover {
+            background: #28a745;
+        }
+        .btn-no {
+            background: #ff3b30;
+            border: none;
+            max-width: 180px;
+        }
+        .btn-no:hover {
+            background: #c9302c;
+        }
+        /* 區塊隱藏切換 */
+        .section {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        /* 內容樣式 */
+        .response-text {
+            font-size: 1.5rem;
+            color: #ffcc00;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .joke-box {
+            background: #262629;
+            border-left: 5px solid #ff3b30;
+            padding: 25px;
+            border-radius: 0 8px 8px 0;
+            text-align: left;
+            min-height: 120px;
+        }
+        .joke-q {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+            line-height: 1.7;
+        }
+        .joke-a {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            white-space: pre-line;
+            color: #ff3b30;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #444;
+        }
+        .joke-img, .end-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 10px auto 0 auto;
+            border-radius: 6px;
+            border: 1px solid #444;
+        }
+        .end-img {
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+        .evaluation-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ff3b30;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        .counter-text {
+            font-size: 1rem;
+            color: #8e8e93;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>地獄轉運站</h1>
+
+    <div id="quiz-section" class="section active">
+        <p class="question">你今天心情怎麼樣？</p>
+        <div class="btn-group">
+            <button class="btn" onclick="goToResponse('超級開心，世界真美好！')">超級開心，世界真美好！</button>
+            <button class="btn" onclick="goToResponse('普通，就跟平常一樣。')">普通，就跟平常一樣。</button>
+            <button class="btn" onclick="goToResponse('有點糟糕，需要被治癒。')">有點糟糕，需要被治癒。</button>
+            <button class="btn" onclick="goToResponse('別問了，我想物理超渡。')">別問了，我想物理超渡。</button>
+        </div>
+    </div>
+
+    <div id="response-section" class="section">
+        <p id="user-choice-echo" style="color: #8e8e93; margin-bottom: 10px;"></p>
+        <p class="response-text">那我覺得你應該要聽個地獄梗。</p>
+        <button class="btn" style="background: #ff3b30; border: none; max-width: 200px; margin: 0 auto;" onclick="startJokes()">開始載入地獄</button>
+    </div>
+
+    <div id="joke-display-section" class="section">
+        <div class="counter-text" id="joke-counter">目前已看了：0 個笑話</div>
+        <div class="joke-box" id="joke-content-box">
+            </div>
+        
+        <p class="question" style="margin-top: 30px; margin-bottom: 10px;">還想繼續累積業障嗎？</p>
+        <div class="btn-row">
+            <button class="btn btn-yes" onclick="showNextRandomJoke()">要，再來一個</button>
+            <button class="btn btn-no" onclick="stopJokes()">不要了，抖</button>
+        </div>
+    </div>
+
+    <div id="end-section" class="section">
+        <p class="question" style="color: #34c759; margin-bottom: 5px;">看來你的良心受不了了。去補個功德吧：</p>
+        <div id="joke-summary-count" style="color: #8e8e93; font-size: 0.95rem; margin-bottom: 15px;"></div>
+        
+        <img class="end-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_U0xTokrLoKxdw_8wRp7KdNv_n3G8ZNQD1g&s" alt="功德箱">
+        
+        <div id="evaluation-output" class="evaluation-text"></div>
+        
+        <button class="btn" style="margin-top: 25px; background: #333; border: none;" onclick="location.reload()">重新超渡</button>
+    </div>
+</div>
+
+<script>
+    const jokesDatabase = [
+        { type: 'qa', q: "你知道阿嫲和洗发精的共通點在哪裡嗎?", a: "經常倒在浴室地上\n\n而且都裝在罐子裡" },
+        { type: 'statement', text: "我們不能推翻霍金的理論，但可以推翻他的輪椅" },
+        { type: 'qa', q: "為什麼美國人打撞球一直輸？", a: "因為他們只打黑的" },
+        { type: 'qa', q: "台灣哪個時期最多宅男", a: "日治時期 因為都在追番" },
+        { type: 'image', url: "https://scontent-tpe1-1.cdninstagram.com/v/t51.75761-15/481011127_17899075077109785_1763962181634271870_n.webp?_nc_cat=100&ig_cache_key=MzU3MjUzODYxMDY5NDM0MTAwNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMu1080.sdr.regular_photo.C3\"_nc_ohc=4Rz3o2Gy-SIQ7kNvwGcC-qg&_nc_oc=AdpGTRShTwq-bcP0C7bSR6Uk8lrvd-w7Nnv6a4CfwF9hJZcFwDhSotFp8nhPLwKE5A4&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-tpe1-1.cdninstagram.com&_nc_gid=chD1PwuZSIyCy_KlYgfg0Q&_nc_ss=7a22e&oh=00_Af_TdSomNBHvfNXW4OmUAyaOmKbNMeQuQeuS4j76aoGQ4A&oe=6A254E52" },
+        { type: 'qa', q: "黑人的手掌為什麼是白的？", a: "因為上帝在噴漆的時候他們手趴在警車上" },
+        { type: 'image', url: "https://scontent-tpe1-1.cdninstagram.com/v/t51.75761-15/481508878_17867185986324674_3529557791624216869_n.webp?_nc_cat=101&ig_cache_key=MzU3MjU0MTIyMzA2NTkzNDk2MQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTE3MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=lZq2p_PC1OoQ7kNvwELM3AJ&_nc_oc=AdqVWSfnitx9q0AgSzXkwffpvd-Z_osuLFWIkJ5OmrSQIsf99NwzBq-Yp5xhYMVUT88&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-tpe1-1.cdninstagram.com&_nc_gid=h8SVO4bJpZ0OxiZekoUoDg&_nc_ss=7a22e&oh=00_Af8vlvyUk6AEHvp-vHByDibFAUuGEwp_5CpxEPOZma4ydQ&oe=6A258394" },
+        { type: 'image', url: "https://scontent-tpe1-1.cdninstagram.com/v/t51.75761-15/480654473_17907387582100526_4502851490836420746_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=104&ig_cache_key=MzU3MjYxMzgyNjg3OTQwOTQxNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuOTYxLnNkci5yZWd1bGFyX3Bob3RvLkMzIn0%3D&_nc_ohc=RHA2iqUoIlQQ7kNvwF3kql2&_nc_oc=Adr9K4TyKHZKwSV_55LpyxqAWhCEwDTDl9IZ2RX1e5VQQZU1LllLELwLGEyaTyG2Y4A&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-tpe1-1.cdninstagram.com&_nc_gid=NreMzdfWX4KIrJNoBCS8fw&_nc_ss=7a22e&oh=00_Af9M-EKvESiWkMucESmPHZCExsf6f9cTCjBKOD0b9k_kBQ&oe=6A258404" },
+        { type: 'image', url: "https://scontent-tpe1-1.cdninstagram.com/v/t51.75761-15/480828668_17888063448199899_3291002807896663626_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=111&ig_cache_key=MzU3MjU5NjQ1NTA0OTk2NDM2Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=QJnVp9IDvcQQ7kNvwHcmdkI&_nc_oc=Adp3NIbKzbnCkS91sJdP6xuE4SkvmgDFTQe9Qv7vGNzpmepQWXlTpe4i5GIvR4kbZKA&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-tpe1-1.cdninstagram.com&_nc_gid=cPM3c_XxwS9-6YdXSsAsqA&_nc_ss=7a22e&oh=00_Af9Y4fjPSAdlVRayjaVlfdsEfHzd6k9LUPeK2OZ7g7v8vg&oe=6A257F3A" },
+        { type: 'qa', q: "知道為什麼孤兒院風評很好嗎？", a: "因為沒有家長投訴" },
+        { type: 'qa', q: "黑人跟腳踏車有什麼相同之處？", a: "都要鐵鍊才會動還都被鎖在車庫裡" },
+        { type: 'image', url: "https://scontent-tpe1-1.cdninstagram.com/v/t51.75761-15/480929185_17873021784287021_2334852847638276153_n.webp?_nc_cat=110&ig_cache_key=MzU3MjU4NDE1OTYxOTI4NTkzOQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuOTQ3LnNkci5yZWd1bGFyX3Bob3RvLkMzIn0%3D&_nc_ohc=qojFP2QtSokQ7kNvwFSVNKj&_nc_oc=AdppXiCYMTIEoSd-mnWPyDcWvG7LsQRSoqIhkrIWVnXFFd1vk0UTkqolXfG0SUhBkmU&_nc_ad=z-m&_nc_cid=0&_nc_zt=23&_nc_ht=scontent-tpe1-1.cdninstagram.com&_nc_gid=0bsMKYrcxSBloV1KF62Skw&_nc_ss=7a22e&oh=00_Af_xQLHlRyJT9vLYd_smqeBMaDHCbNwoikTVnUGAUgoIwg&oe=6A25539C" },
+        { type: 'statement', text: "我的爺爺很安誕地在睡夢中去世了。\n不像他公車上的乘客們，死前都在尖叫。" },
+        { type: 'statement', text: "給人一條魚，他能吃一天。\n把人丟進海裡，他這輩子都不會再餓了。" },
+        { type: 'qa', q: "為什麼自閉症兒童撞球很厲害？", a: "因為他們會一直給自己做球。" },
+        { type: 'qa', q: "肯德基全家桶最溫馨的地方是什麼？", a: "裡面的雞全家都在這裡了，整整齊齊。" },
+        { type: 'qa', q: "蔬菜人、植物人、壽司人，哪一個最可憐？", a: "壽司人，因為他沒辦法載入（卷）了。" },
+        { type: 'qa', q: "為什麼盲人不能去跳傘？", a: "開因為會嚇到他們的導盲犬。" },
+        { type: 'qa', q: "為什麼非洲沒有密室逃脫？", a: "因為他們出去了就是密室，進來了叫回家。" },
+        { type: 'qa', q: "聾啞學校發生火災時，最可怕的是什麼？", a: "大家都在比讚。" },
+        { type: 'qa', q: "為什麼空難生還者都沒穿衣服？", a: "因為空姐說：請在迫降前將所有金屬物品與隨身衣物脫掉，方便燃燒。" },
+        { type: 'qa', q: "為什麼衣索比亞人過生日不吃蛋糕？", a: "因為一顆感冒藥就能當蠟燭吹了。" },
+        { type: 'qa', q: "為什麼地獄梗在美國很有市場？", a: "因為他們的校園生活本來就充滿了子彈（實戰演練）。" },
+        { type: 'qa', q: "孕婦流產之後要吃什麼？", a: "鐵牛運功散，因為胎死腹中。" },
+        { type: 'qa', q: "地球上最硬的蔬菜是什麼？", a: "植物人的大腿骨。" },
+        { type: 'qa', q: "為什麼敘利亞的孩子從不玩躲貓貓？", a: "因為只要被找到，就是一發導彈。" },
+        { type: 'qa', q: "肯尼迪總統 and 林肯總統有什麼共同點？", a: "他們的思維都很開放（Open-minded）。" },
+        { type: 'qa', q: "為什麼阿茲海默症患者最適合玩恐怖遊戲？", a: "因為每個角落都能嚇他第二次。" },
+        { type: 'qa', q: "為什麼神學家和天主教神父都喜歡玩《Minecraft》？", a: "因為裡面有滿滿的小村民可以『好好照顧』。" },
+        { type: 'qa', q: "盲人看恐怖片會怕嗎？", a: "不會，但聽到拉拉鍊的聲音會怕。" },
+        { type: 'qa', q: "美國警察最喜歡什麼動物？", a: "斑馬，因為可以只打黑的那一半。" },
+        { type: 'qa', q: "為什麼孤兒不適合踢足球？", a: "因為他們不知道『傳給老爸』是什麼意思。" },
+        { type: 'qa', q: "為什麼在非洲買不到減肥藥？", a: "因為那是他們的日常主食。" },
+        { type: 'qa', q: "廣島跟長崎的特產是什麼？", a: "熟人。" },
+        { type: 'qa', q: "什麼東西有四條腿但不能走路？", a: "半條狗，或者是兩張輪椅。" },
+        { type: 'qa', q: "為什麼猶太人很適合當麵包師傅？", a: "因為他們對烤箱的溫度特別敏感。" },
+        { type: 'qa', q: "智障兒和一盤高麗菜有什麼共同點？", a: "切開來的時候，大家都笑不出來。" },
+        { type: 'qa', q: "為什麼斷手斷腳的人最適合去當守門員？", a: "因為反正他本來就不會『手球』。" },
+        { type: 'qa', q: "如果一個黑人孕婦去流產，這叫什麼？", a: "預防性犯罪控制。" },
+        { type: 'qa', q: "為什麼恐怖份子去考駕照很容易過？", a: "因為他們不管怎樣都是一路開到底，絕不踩煞車。" },
+        { type: 'qa', q: "為什麼大賣場裡的輪椅區從不打折？", a: "因為他們站不起來，沒辦法抗議。" },
+        { type: 'qa', q: "有一對連體嬰，其中一個犯罪了，法官該怎麼判？", a: "判處死刑，另一個當作連帶賠償。" },
+        { type: 'qa', q: "為什麼地獄沒有冷氣？", a: "因為那些政客、律師和壞人把額度都吹完了。" },
+        { type: 'qa', q: "聖誕老人最討厭去哪裡送禮物？", a: "非洲，因為他們根本撐不到聖誕節。" },
+        { type: 'qa', q: "為什麼黑人只在晚上出門偷東西？", a: "因為自帶隱形迷彩。" },
+        { type: 'qa', q: "為什麼鐵達尼號沉沒時，船上的小提琴手還在拉琴？", a: "因這是他們這輩子最後一次吃到高級海鮮（現撈）。" },
+        { type: 'qa', q: "泰國的變性人上廁所要進哪一間？", a: "身障廁所，因為那叫『結構性損壞』。" },
+        { type: 'qa', q: "為什麼美國的學校現在都改成透明書包了？", a: "方便教官數子彈剩幾發。" },
+        { type: 'qa', q: "為什麼沒有人敢惹坐輪椅的黑人？", a: "因為他同時免疫了物理攻擊與魔法（種族）暴擊。" },
+        { type: 'qa', q: "什麼情況下，把小嬰兒丟進果汁機裡是不道德的？", a: "當你沒有蓋蓋子的時候。" },
+        { type: 'qa', q: "盲人摸象的最後一個盲人摸到了什麼？", a: "大象的排泄物，但他以為是熱騰騰的布丁。" },
+        { type: 'qa', q: "為什麼美國的歷史課本越來越薄？", a: "因為原住民都被殺光了，沒什麼好寫的。" },
+        { type: 'qa', q: "什麼人最喜歡吃生魚片？", a: "海難倖存者（而且是剛游過來的死者）。" },
+        { type: 'qa', q: "為什麼希特勒最後會自殺？", a: "因為他收到了猶太人的瓦斯費帳單。" },
+        { type: 'qa', q: "為什麼漸凍人最不適合當間諜？", a: "因為他連手指都動不了，沒辦法自盡。" },
+        { type: 'qa', q: "為什麼在孤兒院玩捉迷藏最痛苦？", a: "因為就算你躲到明天，也沒有爸爸媽媽會來找你。" },
+        { type: 'qa', q: "為什麼抑鬱症患者去跳樓的時候，大家都在下面拍手？", a: "因為他終於肯踏出那一步（Out of comfort zone）。" },
+        { type: 'qa', q: "為什麼黑人不能當醫生？", a: "因為他們開刀的時候，手套一戴上去看起來就像犯罪現場。" },
+        { type: 'qa', q: "什麼人走路最安靜？", a: "沒有腳的人。" },
+        { type: 'qa', q: "為什麼衣索比亞的狗長得很像貓？", a: "因為牠們都餓到只剩骨架了。" },
+        { type: 'qa', q: "如果一輛載滿黑人的巴士開下懸崖，會發生什麼事？", a: "浪費，因為裡面本來可以塞更多人。" },
+        { type: 'qa', q: "為什麼恐怖分子不喜歡喝可樂？", a: "因為一打開就有『啵』的一聲，他們以為要引爆了。" },
+        { type: 'qa', q: "為什麼黑人家裡沒有保險箱？", a: "因為有保險箱也沒用，整台都會被隔壁的黑人搬走。" },
+        { type: 'qa', q: "為什麼唐氏症的小孩不適合玩剪刀石頭布？", a: "因為他們出什麼看起來都像出拳頭。" }
+    ];
+
+    let remainingJokes = [];
+    let jokeCount = 0; // 用來計算使用者總共「看了」幾個笑話
+
+    function switchSection(sectionId) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(sectionId).classList.add('active');
+    }
+
+    function goToResponse(choiceText) {
+        document.getElementById('user-choice-echo').innerText = `你選擇了："${choiceText}"`;
+        switchSection('response-section');
+    }
+
+    function startJokes() {
+        remainingJokes = [...jokesDatabase];
+        jokeCount = 0; 
+        updateCounterDisplay();
+        switchSection('joke-display-section');
+        showNextRandomJoke();
+    }
+
+    function updateCounterDisplay() {
+        document.getElementById('joke-counter').innerText = `目前已看了：${jokeCount} 個笑話`;
+    }
+
+    function showNextRandomJoke() {
+        jokeCount++; // 每次顯示新笑話時，計數器就加 1
+        updateCounterDisplay();
+
+        if (remainingJokes.length === 0) {
+            remainingJokes = [...jokesDatabase];
+        }
+
+        const randomIndex = Math.floor(Math.random() * remainingJokes.length);
+        const joke = remainingJokes.splice(randomIndex, 1)[0];
+
+        const box = document.getElementById('joke-content-box');
+        box.innerHTML = ''; 
+
+        if (joke.type === 'qa') {
+            const qEl = document.createElement('div');
+            qEl.className = 'joke-q';
+            qEl.innerText = joke.q;
+            box.appendChild(qEl);
+
+            const ansBtn = document.createElement('button');
+            ansBtn.className = 'btn btn-ans';
+            ansBtn.innerText = '看答案';
+            
+            const aEl = document.createElement('div');
+            aEl.className = 'joke-a';
+            aEl.style.display = 'none';
+            aEl.innerText = joke.a;
+            
+            ansBtn.onclick = function() {
+                aEl.style.display = 'block';
+                ansBtn.style.display = 'none';
+            };
+
+            box.appendChild(ansBtn);
+            box.appendChild(aEl);
+
+        } else if (joke.type === 'statement') {
+            const textEl = document.createElement('div');
+            textEl.className = 'joke-q'; 
+            textEl.innerText = joke.text;
+            box.appendChild(textEl);
+
+        } else if (joke.type === 'image') {
+            const imgEl = document.createElement('img');
+            imgEl.className = 'joke-img';
+            imgEl.src = joke.url;
+            imgEl.alt = "地獄隨機梗圖";
+            box.appendChild(imgEl);
+        }
+    }
+
+    function stopJokes() {
+        document.getElementById('joke-summary-count').innerText = `你總共挑戰了 ${jokeCount} 個地獄梗。`;
+        
+        const evalOutput = document.getElementById('evaluation-output');
+        let evaluationText = "";
+
+        // 依據使用者看的笑話數量判定等級
+        if (jokeCount >= 0 && jokeCount <= 10) {
+            evaluationText = "業障算淺，過可功抵";
+        } else if (jokeCount >= 11 && jokeCount <= 20) {
+            evaluationText = "你一隻腳踏進了地獄";
+        } else if (jokeCount >= 21 && jokeCount <= 30) {
+            evaluationText = "半截身體感受火熱";
+        } else if (jokeCount >= 31 && jokeCount <= 40) {
+            evaluationText = "你已沐浴在岩漿中";
+        } else if (jokeCount >= 41 && jokeCount <= 50) {
+            evaluationText = "可以成為地獄官吏了";
+        } else if (jokeCount >= 51 && jokeCount <= 63) {
+            evaluationText = "你已踏入深淵萬劫不復，恭喜獲得和溫寀慈一樣等級的殊榮";
+        } else {
+            // 超過 63 的防呆機制
+            evaluationText = "你已踏入深淵萬劫不復，恭喜獲得和溫寀慈一樣等級的殊榮";
+        }
+
+        evalOutput.innerText = evaluationText;
+        switchSection('end-section');
+    }
+</script>
+
+</body>
+</html>
